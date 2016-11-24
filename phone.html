@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<meta name="description" content="Сайт електроних сервісів міста Мелітополь. Кабінет самообслуговування, контаку з адміністрацією та мерією міста">
+<meta name=keywords content="SmartCity.Melitopol, SM, SmartCity, Melitopol">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+<meta name=author content="Сажнєв Михайло / 100000718680383, Вячеслав Рєдькін / 100012765812627, Станіслав Деріпаско / 100012813070004">
+<link href=css/bootstrap.min.css rel=stylesheet>
+<link href=css/fractal.css rel=stylesheet>
+<script src=js/jquery.min.js></script>
+<script src=js/bootstrap.min.js></script>
+<script src=js/sobes.js></script>
+</head>
+<!--Хедер-->
+<!--modal запиту_start-->
+<div class="container">
+<div class="modal fade" id=myphone role=dialog>
+<div class="modal-dialog modal-sm" style="opacity: 0,5;">
+<div class=modal-content>
+<div class=modal-header>
+<button type=button class="close noprint" data-dismiss=modal  onClick="refreshPage()">&times;</button>
+<h4>Повідомте, будь ласка, номер Вашого мобільного телефону для інформаційних повідомлень Мелітопольської міської ради</h4>
+</div>
+<div class=modal-body id=phone_grab style="font-size:10px">
+<div class=panel-heading><h4>Номер мобільного телефону</h4></div>
+<div class=input-group><input type=text class=form-control id="phone" value="" placeholder="098 123 45 67"></div><br>
+<div class=panel-heading><h4>Ваше прізвище</h4></div>
+<div class=input-group><input type=text class=form-control id="NAME" value="" placeholder=Сидоренко></div><br>
+<div class=panel-heading><h4>Ваше ім'я</h4></div>
+<div class=input-group><input type=text class=form-control id="Sname"  value="" placeholder=Андрій></div>
+</div>
+<div class="modal-footer noprint">
+<button type=submit class="btn btn-danger pull-left" data-dismiss=modal onClick="sub_info()">Ні, далі</button>
+<button type=submit class="btn btn-success" data-dismiss=modal onClick="sub_info()">Добре, далі</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!--modal запиту_end-->
+<!--кнопка запиту-->
+<button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myphone"> Запит</button>
