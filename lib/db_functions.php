@@ -1,5 +1,5 @@
 <?php
-header("Content-Type: text/html; charset=utf-8");
+
 
 
 /*ниже представленна функция чтения из бд.
@@ -17,8 +17,8 @@ function db_read($table, $id, $col)
 {
 	global $_CONFIG;
 	$connect=mysql_connect($_CONFIG['db_host'], $_CONFIG['db_user'], $_CONFIG['db_pass']);
-	mysql_query('SET NAMES utf8');
 	if (!$connect) {return "DB_connect_server_error";}
+	mysql_query('SET NAMES utf8', $connect);
 	if(!mysql_select_db($_CONFIG['db_name'])) {return "DB_connect_error";}
 	if ($table=="")
 	{
@@ -144,6 +144,7 @@ function db_read_if()
 	global $_CONFIG;
 	$connect=mysql_connect($_CONFIG['db_host'], $_CONFIG['db_user'], $_CONFIG['db_pass']);
 	if (!$connect) {return "DB_connect_server_error";}
+	mysql_query('SET NAMES utf8', $connect);
 	if(!mysql_select_db($_CONFIG['db_name'])) {return "DB_connect_error";}
 	$query=mysql_query("SELECT * FROM  `$table` WHERE $where_out ");
 
@@ -161,6 +162,128 @@ function db_read_if()
 				
 return $out;
 }
+
+
+function db_read_iff()
+{	
+	$table = func_get_arg(0);
+	$limstart = func_get_arg(1);
+	$limend = func_get_arg(2);
+	
+    $numargs = func_num_args();
+    $arg_list = func_get_args();
+    for ($i = 3; $i < $numargs; $i++) 
+	{
+	
+	$param=$arg_list[$i];
+	$i++;
+    $where_out=$where_out."`".$param."`"." LIKE "."'".$arg_list[$i]."'"." ";
+	$mark=$i+1;
+	if ($i<$numargs && $mark<$numargs){$where_out=$where_out."AND ";}
+    }
+
+	global $_CONFIG;
+	$connect=mysql_connect($_CONFIG['db_host'], $_CONFIG['db_user'], $_CONFIG['db_pass']);
+	if (!$connect) {return "DB_connect_server_error";}
+	mysql_query('SET NAMES utf8', $connect);
+	if(!mysql_select_db($_CONFIG['db_name'])) {return "DB_connect_error";}
+	$query=mysql_query("SELECT * FROM  `$table` WHERE $where_out LIMIT $limstart, $limend");
+echo "SELECT * FROM  `$table` WHERE $where_out ORDER BY `id` DESC LIMIT $limstart, $limend";
+	if (!$query or !mysql_num_rows($query))  return "error";
+		$num=0;
+		while ($row = mysql_fetch_assoc($query)) 
+		{		
+			foreach($row as $key => $value) 
+				{ 
+				$out[$num][$key]=$value;					 
+				}
+				$num++;
+				  
+				}	
+				
+return $out;
+}
+
+
+function db_read_count()
+{	
+	$table = func_get_arg(0);	
+    $numargs = func_num_args();
+    $arg_list = func_get_args();
+    for ($i = 1; $i < $numargs; $i++) 
+	{
+	
+	$param=$arg_list[$i];
+	$i++;
+    $where_out=$where_out."`".$param."`"." LIKE "."'".$arg_list[$i]."'"." ";
+	$mark=$i+1;
+	if ($i<$numargs && $mark<$numargs){$where_out=$where_out."AND ";}
+    }
+
+	global $_CONFIG;
+	$connect=mysql_connect($_CONFIG['db_host'], $_CONFIG['db_user'], $_CONFIG['db_pass']);
+	if (!$connect) {return "DB_connect_server_error";}
+	mysql_query('SET NAMES utf8', $connect);
+	if(!mysql_select_db($_CONFIG['db_name'])) {return "DB_connect_error";}
+	$query=mysql_query("SELECT count(*) FROM  `$table` WHERE $where_out");
+	if (!$query or !mysql_num_rows($query))  return "error";
+		$num=0;
+		$row = mysql_fetch_array($query) ;
+	
+				
+return $row['count(*)'];
+}
+
+
+
+function db_readmin_count($table)
+{	
+	global $_CONFIG;
+	$connect=mysql_connect($_CONFIG['db_host'], $_CONFIG['db_user'], $_CONFIG['db_pass']);
+	if (!$connect) {return "DB_connect_server_error";}
+	mysql_query('SET NAMES utf8', $connect);
+	if(!mysql_select_db($_CONFIG['db_name'])) {return "DB_connect_error";}
+	$query=mysql_query("SELECT count(*) FROM  `$table` ORDER BY `id` DESC ");
+
+	if (!$query or !mysql_num_rows($query))  return "error";
+		$row = mysql_fetch_array($query) ;
+	
+			
+return $row['count(*)'];
+}
+
+
+
+function db_readminx($table, $limstart, $limend)
+{	
+	global $_CONFIG;
+	$connect=mysql_connect($_CONFIG['db_host'], $_CONFIG['db_user'], $_CONFIG['db_pass']);
+	if (!$connect) {return "DB_connect_server_error";}
+	mysql_query('SET NAMES utf8', $connect);
+	if(!mysql_select_db($_CONFIG['db_name'])) {return "DB_connect_error";}
+	$query=mysql_query("SELECT * FROM  `$table` ORDER BY `id` DESC LIMIT $limstart , $limend ");
+
+	if (!$query or !mysql_num_rows($query))  return "error";
+		$num=0;
+		while ($row = mysql_fetch_assoc($query)) 
+		{		
+			foreach($row as $key => $value) 
+				{ 
+				$out[$num][$key]=$value;					 
+				}
+				$num++;
+				  
+		}	
+
+return $out;
+}
+
+
+
+
+
+
+
 
 function db_readmax_if($table,$arr)
 {	
@@ -181,6 +304,7 @@ function db_readmax_if($table,$arr)
 	global $_CONFIG;
 	$connect=mysql_connect($_CONFIG['db_host'], $_CONFIG['db_user'], $_CONFIG['db_pass']);
 	if (!$connect) {return "DB_connect_server_error";}
+	mysql_query('SET NAMES utf8', $connect);
 	if(!mysql_select_db($_CONFIG['db_name'])) {return "DB_connect_error";}
 	$query=mysql_query("SELECT * FROM  `$table` WHERE $where_out ");
 
@@ -199,6 +323,45 @@ function db_readmax_if($table,$arr)
 return $out;
 }
 
+function db_readmaxfilm_if($table,$arr,$limstart,$limend)
+{	
+    for ($i = 0; $i < count($arr); $i++) 
+	{
+
+	$param=$arr[$i];
+	$i++;
+	$operator=$arr[$i];
+	$i++;
+	$value=$arr[$i];
+    $where_out=$where_out."`".$param."`"." ".$operator." "."'".$value."'"." ";
+
+	$mark=$i+1;
+	if ($i<count($arr) && $mark<count($arr)){$where_out=$where_out."AND ";}
+    }
+
+	global $_CONFIG;
+	$connect=mysql_connect($_CONFIG['db_host'], $_CONFIG['db_user'], $_CONFIG['db_pass']);
+	if (!$connect) {return "DB_connect_server_error";}
+	mysql_query('SET NAMES utf8', $connect);
+	if(!mysql_select_db($_CONFIG['db_name'])) {return "DB_connect_error";}
+	$query=mysql_query("SELECT * FROM  `$table` WHERE $where_out LIMIT $limstart , $limend ");
+
+	if (!$query or !mysql_num_rows($query))  return "error";
+		$num=0;
+		while ($row = mysql_fetch_assoc($query)) 
+		{		
+			foreach($row as $key => $value) 
+				{ 
+				$out[$num][$key]=$value;					 
+				}
+				$num++;
+				  
+				}	
+
+return $out;
+}
+
+
 function db_read_if_arr($table, $array)
 {	
 
@@ -215,6 +378,7 @@ function db_read_if_arr($table, $array)
 	global $_CONFIG;
 	$connect=mysql_connect($_CONFIG['db_host'], $_CONFIG['db_user'], $_CONFIG['db_pass']);
 	if (!$connect) {return "DB_connect_server_error";}
+	mysql_query('SET NAMES utf8', $connect);
 	if(!mysql_select_db($_CONFIG['db_name'])) {return "DB_connect_error";}
 	$query=mysql_query("SELECT * FROM  `$table` WHERE $where_out ");
 
@@ -263,6 +427,7 @@ function db_rec()
 	global $_CONFIG;
 	$connect=mysql_connect($_CONFIG['db_host'], $_CONFIG['db_user'], $_CONFIG['db_pass']);
 	if (!$connect) {return "DB_connect_server_error";}
+	mysql_query('SET NAMES utf8', $connect);
 	if(!mysql_select_db($_CONFIG['db_name'])) {return "DB_connect_error";}
 	if (mysql_query("INSERT INTO `$table` ( $columns )
 	VALUES ( $data );")) return "ok";
@@ -289,8 +454,9 @@ function db_rec_arr($table, $array)
 	global $_CONFIG;
 	$connect=mysql_connect($_CONFIG['db_host'], $_CONFIG['db_user'], $_CONFIG['db_pass']);
 	if (!$connect) {return "DB_connect_server_error";}
+	mysql_query('SET NAMES utf8', $connect);
 	if(!mysql_select_db($_CONFIG['db_name'])) {return "DB_connect_error";}
-	if (mysql_query("INSERT INTO `data` ( $columns )
+	if (mysql_query("INSERT INTO `$table` ( $columns )
 	VALUES ( $data );")) return "ok";
 	
 }
@@ -324,6 +490,7 @@ $id = func_get_arg(1);
 	global $_CONFIG;
 	$connect=mysql_connect($_CONFIG['db_host'], $_CONFIG['db_user'], $_CONFIG['db_pass']);
 	if (!$connect) {return "DB_connect_server_error";}
+	mysql_query('SET NAMES utf8', $connect);
 	if(!mysql_select_db($_CONFIG['db_name'])) {return "DB_connect_error";}
 	if (mysql_query("UPDATE  `$table` SET  $columns WHERE  `$table`.`id` =$id;")) return "ok";
 		 	 
@@ -331,8 +498,8 @@ $id = func_get_arg(1);
 
   function db_change_arr ($table, $id, $arr)
  {
-
-    for ($i = 2; $i < count($arr); $i++) 
+print_r($arr);
+    for ($i = 0; $i < count($arr); $i++) 
 	{
 	$param=$arr[$i];
 	$i++;
@@ -345,7 +512,9 @@ $id = func_get_arg(1);
 	global $_CONFIG;
 	$connect=mysql_connect($_CONFIG['db_host'], $_CONFIG['db_user'], $_CONFIG['db_pass']);
 	if (!$connect) {return "DB_connect_server_error";}
+	mysql_query('SET NAMES utf8', $connect);
 	if(!mysql_select_db($_CONFIG['db_name'])) {return "DB_connect_error";}
+	echo "UPDATE  `$table` SET  $columns WHERE  `$table`.`id` =$id;";
 	if (mysql_query("UPDATE  `$table` SET  $columns WHERE  `$table`.`id` =$id;")) return "ok";
 		 	 
  }
@@ -364,6 +533,7 @@ db_delete(string arg1, int arg2, string arg3 .....) где:
 	global $_CONFIG;
 	$connect=mysql_connect($_CONFIG['db_host'], $_CONFIG['db_user'], $_CONFIG['db_pass']);
 	if (!$connect) {return "DB_connect_server_error";}
+	mysql_query('SET NAMES utf8', $connect);
 	if(!mysql_select_db($_CONFIG['db_name'])) {return "DB_connect_error";}
 	 
 $table = func_get_arg(0);
@@ -401,6 +571,7 @@ function db_name_col ($table)
 	global $_CONFIG;
 	$connect=mysql_connect($_CONFIG['db_host'], $_CONFIG['db_user'], $_CONFIG['db_pass']);
 	if (!$connect) {return "DB_connect_server_error";}
+	mysql_query('SET NAMES utf8', $connect);
 	if(!mysql_select_db($_CONFIG['db_name'])) {return "DB_connect_error";}
 	$query=mysql_query("SHOW COLUMNS FROM $table");
 	$num = 0;
@@ -423,6 +594,7 @@ function db_table_name ()
 	global $_CONFIG;
 	$connect=mysql_connect($_CONFIG['db_host'], $_CONFIG['db_user'], $_CONFIG['db_pass']);
 	if (!$connect) {return "DB_connect_server_error";}
+	mysql_query('SET NAMES utf8', $connect);
 	if(!mysql_select_db($_CONFIG['db_name'])) {return "DB_connect_error";}
 	$query=mysql_query("SHOW TABLES");
 

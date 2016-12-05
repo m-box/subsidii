@@ -1,5 +1,5 @@
-﻿<?php
-
+<?php
+header("Content-Type: text/html; charset=utf-8");
 
 
 /*ниже представленна функция чтения из бд.
@@ -17,6 +17,7 @@ function db_read($table, $id, $col)
 {
 	global $_CONFIG;
 	$connect=mysql_connect($_CONFIG['db_host'], $_CONFIG['db_user'], $_CONFIG['db_pass']);
+	mysql_query('SET NAMES utf8');
 	if (!$connect) {return "DB_connect_server_error";}
 	if(!mysql_select_db($_CONFIG['db_name'])) {return "DB_connect_error";}
 	if ($table=="")
