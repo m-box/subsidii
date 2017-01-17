@@ -9,7 +9,7 @@ $r_data=0;
 $r_user=0;
 $s_data=0;
 $s_user=0;
-$handle = fopen("112016.csv", "r");
+$handle = fopen("base.csv", "r");
 while (($data = fgetcsv($handle, 1000, ";")) !== FALSE) {
     $num = count($data);
    /* echo "<p> $num полей в строке $row: <br /></p>\n";*/
